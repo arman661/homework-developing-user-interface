@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class TicketService {
 
         // heavy search...
         try {
-            Thread.sleep(ThreadLocalRandom.current().nextInt(2000, 4000));
+            Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 2000));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -46,11 +46,12 @@ public class TicketService {
             params.put("at", airportTo);
         }
         if (date != null) {
-            query += " f.date >= :dateStart and f.date < :dateEnd and";
-            params.put("dateStart", date.atStartOfDay());
-            params.put("dateEnd", date.plusDays(1).atStartOfDay());
+            query += " f.takeOffDate >= :dateStart and f.takeOffDate < :dateEnd and";
+            ZonedDateTime zonedDate = date.atStartOfDay(ZoneId.systemDefault());
+            params.put("dateStart", zonedDate.toOffsetDateTime());
+            params.put("dateEnd", zonedDate.plusDays(1).toOffsetDateTime());
         }
-        query += "1 = 1";
+        query += " 1 = 1";
         return dataManager.load(Flight.class)
                 .query(query)
                 .parameters(params)

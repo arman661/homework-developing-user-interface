@@ -40,7 +40,8 @@ public class Flight {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Airline airline;
 
-    @Column(name = "TAKE_OFF_DATE")
+    @NotNull
+    @Column(name = "TAKE_OFF_DATE", nullable = false)
     private OffsetDateTime takeOffDate;
 
     public String getNumber() {
