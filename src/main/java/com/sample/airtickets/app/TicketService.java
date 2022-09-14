@@ -64,14 +64,7 @@ public class TicketService {
     public Ticket saveTicket(Ticket ticket) {
         int reservationId = ThreadLocalRandom.current().nextInt(1000, 9999);
         ticket.setReservationId(Integer.toString(reservationId));
-        Ticket saved = dataManager.save(ticket);
 
-        // send ticket to other system...
-        try {
-            Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 3000));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        return saved;
+        return dataManager.save(ticket);
     }
 }
