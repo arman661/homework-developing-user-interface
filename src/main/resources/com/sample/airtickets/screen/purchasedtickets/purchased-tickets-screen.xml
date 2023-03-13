@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="Purchased tickets">
+    <data>
+        <collection id="ticketsDc" class="com.sample.airtickets.entity.Ticket">
+            <fetchPlan extends="_base">
+                <property name="flight" fetchPlan="_base">
+                    <property name="fromAirport" fetchPlan="_base"/>
+                    <property name="toAirport" fetchPlan="_base"/>
+                    <property name="airline" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader id="ticketsDl">
+                <query>
+                    <![CDATA[select e from Ticket e where
+                        e.id = :id]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout>
+        <table id="ticketsTable" height="100%" width="100%" dataContainer="ticketsDc">
+            <columns>
+                <column id="flight.number"/>
+                <column id="flight.airline"/>
+                <column id="flight.fromAirport"/>
+                <column id="flight.toAirport"/>
+                <column id="flight.takeOffDate"/>
+                <column id="passengerName"/>
+                <column id="passportNumber"/>
+                <column id="telephone"/>
+                <column id="reservationId"/>
+            </columns>
+        </table>
+    </layout>
+</window>

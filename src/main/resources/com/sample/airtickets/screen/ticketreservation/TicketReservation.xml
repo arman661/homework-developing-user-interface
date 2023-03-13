@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window" xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://ticketreservation.caption">
+    <data>
+        <collection id="flightsDc" class="com.sample.airtickets.entity.Flight">
+            <fetchPlan extends="_base">
+                <property name="fromAirport" fetchPlan="_base"/>
+                <property name="toAirport" fetchPlan="_base"/>
+                <property name="airline" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="flightsDl">
+                <query>
+                    <![CDATA[select e from Flight e]]>
+                    <condition>
+                        <and>
+                            <c:jpql>
+                                <c:where>
+                                    e.takeOffDate = :date
+                                </c:where>
+                            </c:jpql>
+                        </and>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+        <collection id="airportsDc" class="com.sample.airtickets.entity.Airport">
+            <fetchPlan extends="_base"/>
+            <loader id="airportsDl">
+                <query>
+                    select e from Airport e
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <inputDialog id="inputDialog" dialogActions="OK_CANCEL">
+            <parameters>
+                <stringParameter id="passengerName" caption="Passenger name"/>
+                <stringParameter id="passportNumber" caption="Passport number"/>
+                <stringParameter id="telephone" caption="Telephone"/>
+            </parameters>
+        </inputDialog>
+        <dataLoadCoordinator>
+            <refresh loader="flightsDl">
+                <onComponentValueChanged component="departureDate"
+                                         likeClause="CASE_INSENSITIVE"
+                                         param="date"/>
+            </refresh>
+        </dataLoadCoordinator>
+    </facets>
+    <layout height="100%" width="100%">
+        <groupBox orientation="vertical" spacing="true"
+                  caption="Filter">
+            <entityComboBox id="from"
+                            caption="From"
+                            dataContainer="flightsDc"
+                            property="fromAirport"
+                            optionsContainer="airportsDc">
+            </entityComboBox>
+            <entityComboBox id="to"
+                            caption="To"
+                            dataContainer="flightsDc"
+                            property="toAirport"
+                            optionsContainer="airportsDc">
+            </entityComboBox>
+            <dateField id="departureDate" caption="Departure date" dateFormat="dd/MM/yyyy" datatype="offsetDateTime"/>
+            <button id="searchBtn" caption="search" icon="font-icon:SEARCH"/>
+        </groupBox>
+        <groupTable id="flightsTable"
+                    width="100%"
+                    dataContainer="flightsDc">
+            <columns>
+                <column id="number"/>
+                <column id="fromAirport"/>
+                <column id="toAirport"/>
+                <column id="airline"/>
+                <column id="takeOffDate"/>
+                <column id="reserve" caption="Actions"/>
+            </columns>
+        </groupTable>
+        <progressBar id="progressBar" width="100%" visible="false" indeterminate="true"/>
+    </layout>
+</window>
